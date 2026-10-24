@@ -446,6 +446,11 @@ it.each([en, zh])('renders positive bonus wallets separately from recharge balan
   expect(screen.getByText(copy.balance).parentElement!.textContent).toBe(`${copy.balance}¥209.00$20.07`)
   expect(screen.getByText(copy.bonusBalance).parentElement!.textContent).toBe(`${copy.bonusBalance}¥5.00<$0.01`)
   expect(screen.getByRole('region').querySelectorAll(`.${css.divider}`)).toHaveLength(2)
+  // The recharge action belongs to the balance row itself and appears once: the
+  // More row keeps only the Usage destination.
+  const balanceRow = screen.getByText(copy.balance).closest(`.${css.row}`) as HTMLElement
+  expect(within(balanceRow).getByRole('link', { name: copy.topUp })).toBeTruthy()
+  expect(screen.getAllByRole('link', { name: copy.topUp })).toHaveLength(1)
   await expect(`${screen.getByRole('region').textContent}\n`)
     .toMatchFileSnapshot(`./expected/bonus-${copy === en ? 'en' : 'zh'}.txt`)
 })

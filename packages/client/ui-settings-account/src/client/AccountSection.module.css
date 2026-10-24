@@ -78,6 +78,17 @@
   border-top: 0.5px solid var(--dsw-alias-border-l2);
 }
 
+/* The recharge row keeps its label and amount together so the row's own
+   top-up action trails them at the card edge. */
+.balanceValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+}
+
 .links,
 .actions {
   display: flex;
@@ -87,35 +98,51 @@
   flex-wrap: wrap;
 }
 
-.linkButton {
+.linkButton,
+.recharge {
   flex: none;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  height: 36px;
-  min-width: 58px;
-  padding: 0 14px;
   border: 0.5px solid var(--dsw-alias-border-l3);
   border-radius: var(--dsw-radius-md);
-  font-size: 14px;
-  line-height: 22px;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .linkButton {
+  height: 36px;
+  min-width: 58px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* The balance row's own recharge action: the Usage link's outline treatment,
+   sized to sit inside the row's 40px height. */
+.recharge {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.linkButton,
+.recharge {
   color: var(--dsw-alias-label-primary);
   background: transparent;
 }
 
 @media (hover: hover) {
-  .linkButton:hover {
+  .linkButton:hover,
+  .recharge:hover {
     background: var(--dsw-alias-interactive-bg-hover);
   }
 }
 
-.linkButton:focus-visible {
+.linkButton:focus-visible,
+.recharge:focus-visible {
   outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color, var(--dsw-alias-state-business-primary));
   outline-offset: 2px;
 }
@@ -138,19 +165,6 @@
   outline: 2px solid var(--dsw-focus-ring-color, var(--dsw-alias-state-business-primary));
   outline-offset: 2px;
   border-radius: 4px;
-}
-
-.primary {
-  color: var(--dsw-alias-label-primary-foreground);
-  background: var(--dsw-alias-button-primary-fill);
-  font-weight: 500;
-  border-color: transparent;
-}
-
-@media (hover: hover) {
-  .primary:hover {
-    background: var(--dsw-alias-button-primary-hover);
-  }
 }
 
 .signedOut {

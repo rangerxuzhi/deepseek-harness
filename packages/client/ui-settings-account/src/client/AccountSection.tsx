@@ -142,6 +142,18 @@ export function AccountSection({ t, useAccount, useTheme, start, cancel, openPla
     <a className={className} href={state?.links.usageUrl} aria-disabled={state === undefined}
       target="_blank" rel="noreferrer" onClick={openUsage}>{label}</a>
   )
+  /**
+   * The recharge entry the balance row carries: the account's top-up destination,
+   * embedded on Desktop and a new tab elsewhere. The opener re-reads the wallet on
+   * a returned page, so the amount next to it reflects the recharge.
+   * @param className - link treatment the balance row renders it with, absent when the sheet has no such rule.
+   * @returns the top-up anchor.
+   */
+  const topUpLink = (className: string | undefined) => (
+    <a className={className} href={state?.links.topUpUrl} aria-disabled={state === undefined}
+      target="_blank" rel="noreferrer"
+      onClick={(event) => { if (openPlatformPage !== undefined && signedIn) { event.preventDefault(); showPage(openPlatformPage, 'top-up') } }}>{t('topUp')}</a>
+  )
   const status = failed || streamFailed || attempt?.phase === 'failed' ? t('failed')
     : attempt?.phase === 'expired' ? t('expired')
       : active ? t(attempt.phase === 'initializing' ? 'initializing' : attempt.phase === 'waiting-browser' ? 'waiting' : 'completing')
@@ -186,14 +198,17 @@ export function AccountSection({ t, useAccount, useTheme, start, cancel, openPla
       </div>}
       <div className={css.balanceCard}>
         <div className={css.row}>
-          <span>{t('balance')}</span>
-          {signedIn && wallets !== undefined && wallets.length > 0
-            ? <span className={css.amount}>{wallets.map(wallet => <span key={wallet.currency}>
-              {formatBalance(wallet.balance, wallet.currency === 'CNY' ? '¥' : '$')}
-            </span>)}</span>
-            : !signedIn || details?.balance === undefined
-              ? <span className={css.unavailable}>{t(!signedIn ? 'balanceSignedOut' : 'loading')}</span>
-              : platformLink(t('balanceUnavailable'), css.unavailableLink)}
+          <span className={css.balanceValue}>
+            <span>{t('balance')}</span>
+            {signedIn && wallets !== undefined && wallets.length > 0
+              ? <span className={css.amount}>{wallets.map(wallet => <span key={wallet.currency}>
+                {formatBalance(wallet.balance, wallet.currency === 'CNY' ? '¥' : '$')}
+              </span>)}</span>
+              : !signedIn || details?.balance === undefined
+                ? <span className={css.unavailable}>{t(!signedIn ? 'balanceSignedOut' : 'loading')}</span>
+                : platformLink(t('balanceUnavailable'), css.unavailableLink)}
+          </span>
+          {signedIn && topUpLink(css.recharge)}
         </div>
         {signedIn && showBonusRow && <>
           <div className={css.divider} />
@@ -215,9 +230,6 @@ export function AccountSection({ t, useAccount, useTheme, start, cancel, openPla
           <span className={css.secondary}>{t('more')}</span>
           <div className={css.links}>
             {platformLink(t('usage'), css.linkButton)}
-            <a className={`${css.linkButton} ${css.primary}`} href={state?.links.topUpUrl} aria-disabled={state === undefined}
-              target="_blank" rel="noreferrer"
-              onClick={(event) => { if (openPlatformPage !== undefined && signedIn) { event.preventDefault(); showPage(openPlatformPage, 'top-up') } }}>{t('topUp')}</a>
           </div>
         </div>
       </div>
